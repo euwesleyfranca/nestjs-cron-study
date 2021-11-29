@@ -10,6 +10,21 @@ export class TaskService {
     timeZone: 'Europe/Paris',
   })
   handleCron() {
-    this.logger.debug('Executando a cron Task a cada 1s ');
+    const services = [
+      {
+        id: '123456',
+        name: 'Wesley Franca',
+        service: 'Alignment',
+        car: 'Ferrari',
+        value: 1800,
+      },
+    ];
+
+    if (services.length) {
+      const result = services.map((services) => services.name);
+      this.logger.debug(' There are new services scheduled, client: ' + result);
+    } else {
+      this.logger.debug(' Not new services scheduled!');
+    }
   }
 }
