@@ -1,30 +1,32 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
-
+import { Cron, SchedulerRegistry } from '@nestjs/schedule';
+import { CronJob } from 'cron';
 @Injectable()
 export class TaskService {
+  constructor(private schedulerRegistry: SchedulerRegistry) {}
   private readonly logger = new Logger(TaskService.name);
 
-  @Cron(CronExpression.EVERY_SECOND, {
-    name: 'TaskService',
-    timeZone: 'Europe/Paris',
-  })
-  handleCron() {
-    const services = [
-      {
-        id: '123456',
-        name: 'Wesley Franca',
-        service: 'Alignment',
-        car: 'Ferrari',
-        value: 1800,
-      },
-    ];
+  @Cron('5 * * * * *')
+  addCronJob(name: string, seconds: string) {
+    name = 'William';
+    seconds = '5';
 
-    if (services.length) {
-      const result = services.map((services) => services.name);
-      this.logger.debug(' There are new services scheduled, client: ' + result);
-    } else {
-      this.logger.debug(' Not new services scheduled!');
-    }
+    const job = new CronJob(`${seconds} * * * * *`, () => {
+      this.logger.warn(`time (${seconds}) for job ${name} to run!`);
+    });
+
+    this.schedulerRegistry.addCronJob(name, job);
+    job.start();
+
+    this.logger.warn(
+      `job ${name} added for each minute at ${seconds} seconds!`,
+    );
+  }
+
+  @Cron('10 * * * * *')
+  deleteCron(name: string) {
+    name = 'William';
+    this.schedulerRegistry.deleteCronJob(name);
+    this.logger.warn(`job ${name} deleted!`);
   }
 }
